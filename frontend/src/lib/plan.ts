@@ -30,8 +30,9 @@ export function isCardAttachPlan(plan: string, planFlow?: string): boolean {
 /** 档位可读名。续费档必须排在 'pro' 兜底之前，否则显示成「Pro 20x」看不出是续费。 */
 export function planLabel(value: string): string {
   const n = String(value || 'free').trim().toLowerCase()
-  if (isGrokPlan(n)) return grokPlanLabel(n)
+  // X 先判：裸 premium_monthly 归 X；Grok 码由调用方按 product 补成 grok_ 前缀（见 RechargeView targetPlan）。
   if (isXPremiumPlan(n)) return 'X ' + n.replace(/^x_/, '').replace('premium_plus', 'Premium+').replace('premium', 'Premium').replace('basic', 'Basic').replace('_monthly', ' / month').replace('_yearly', ' / year')
+  if (isGrokPlan(n)) return grokPlanLabel(n)
   if (n === 'pro_5x_renew') return 'Pro 5x 续费'
   if (n === 'pro_20x_renew' || n.includes('renew')) return 'Pro 20x 续费'
   if (n.includes('promax') || n === 'pro_50x') return 'Pro 50x'
@@ -52,7 +53,7 @@ export function planSatisfied(currentPlan: string, requestedPlan: string, planFl
   const current = String(currentPlan || '').trim().toLowerCase()
   const req = String(requestedPlan || '').trim().toLowerCase()
   if (isXPremiumPlan(req)) return current.startsWith('x_') && current !== 'x_free'
-  // Grok 四档（Lite / SuperGrok / Plus / Heavy）与月/年付是并列商品，不存在「更高档已满足」，只认完全相同。
+  // Grok 四档（Plus / Premium / Super / Ultra）与月/年付是并列商品，不存在「更高档已满足」，只认完全相同。
   if (isGrokPlan(req)) return !!current && grokBarePlan(current) === grokBarePlan(req)
   if (current.startsWith('x_')) return false
   if (isCardAttachPlan(req, planFlow)) return false

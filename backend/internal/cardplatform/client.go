@@ -322,12 +322,13 @@ func (c *Client) GetPlans(ctx context.Context, products ...string) (*PlansRespon
 		out.PaymentRegions = regions
 	}
 	if product == "grok" {
-		// 与 X 同构：定价表键是 grok_monthly，注册表键是裸 monthly。本站统一用裸键。
+		// 与 X 同构：定价表键是 grok_premium_monthly，注册表键是裸 premium_monthly。本站统一用裸键。
+		// 判 Grok 要带前缀：裸 premium_* 也是 X 的键（2026-10-19 Grok 改名）。
 		all := out.Plans
 		out.Plans = map[string]PlanInfo{}
 		registry := []PlanRegistryItem{}
 		for _, entry := range out.Registry {
-			if info, ok := all["grok_"+entry.Key]; ok && IsGrokPlan(entry.Key) {
+			if info, ok := all["grok_"+entry.Key]; ok && IsGrokPlan("grok_"+entry.Key) {
 				info.Key = entry.Key
 				out.Plans[entry.Key] = info
 				registry = append(registry, entry)
