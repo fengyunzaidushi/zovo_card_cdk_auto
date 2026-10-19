@@ -38,6 +38,8 @@ export function planLabel(value: string): string {
   if (n.includes('promax') || n === 'pro_50x') return 'Pro 50x'
   if (n.includes('prolite') || n.includes('5x') || n === 'pro_5x') return 'Pro 5x'
   if (n.includes('20x') || n === 'pro_20x' || n === 'pro' || n === 'chatgptpro' || n.includes('pro')) return 'Pro 20x'
+  // plus_half 必须排在通用 'plus' 之前,否则半价档显示成普通「Plus」看不出。交付的仍是 Plus(planSatisfied 按 plus 秩)。
+  if (n === 'plus_half' || n.includes('plus_half') || n.includes('plus 半价')) return 'Plus 半价'
   if (n.includes('plus')) return 'Plus'
   if (n.includes('team')) return 'Team'
   if (!n || n === 'free') return '免费版'
