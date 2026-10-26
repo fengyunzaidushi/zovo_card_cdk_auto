@@ -1,0 +1,3 @@
+interface:
+  display_name: "Zovo 项目上下文"
+  short_description: "管理 Zovo CDK 项目的上下文、决策、验证记录与任务交接"
